@@ -7,14 +7,23 @@ app.use(express.json())
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`))
 
-app.get('/api/v1/tours', (req,res) => {
-    res.status(200).json({
-        status: 'success',
-        results: tours.length,
-        data: {
-            tours
-        }
-    })
+app.get('/api/v1/tours/:id', (req,res) => {
+    const {id} = req.params
+    const tour = tours[id]
+
+    if(id > tours.length){
+        return res.status(404).json({
+            status: 'failure',
+            message: "This ID doesn't exist"
+        })
+    }else{
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                tour
+            }
+        })
+    }
 })
 
 app.post('/api/v1/tours', (req,res) => {
